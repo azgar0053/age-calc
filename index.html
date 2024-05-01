@@ -137,69 +137,74 @@
 
       $('input').on('change', function (event) {
 
+        $('#yrResult').text('-- ');
+          $('#mnResult').text('--');
+          $('#dyResult').text('--');
+
         const { name, value } = event.target;
-        const dayVal = parseInt($('#dayField').val());
-        const monthVal = parseInt($('#monthField').val());
-        const yearVal = parseInt($('#yearField').val());
+        const dayVal = $('#dayField').val()!=='' ? parseInt($('#dayField').val()):'';
+        const monthVal = $('#monthField').val()!==''? parseInt($('#monthField').val()):'';
+        const yearVal =$('#yearField').val()!==''? parseInt($('#yearField').val()):'';
 
         validation = false;
 
 
+
         const calculateAge = () => {
-  let yearsOld = year - yearVal;
-  let monthsOld = month - monthVal;
-  let daysOld = day - dayVal;
+          let yearsOld = year - yearVal;
+          let monthsOld = month - monthVal;
+          let daysOld = day - dayVal;
 
-  // Adjust months and days if birth day hasn't occurred yet in the current month
-  if (daysOld < 0) {
-    monthsOld--; // Decrease months
-    // Calculate remaining days in the birth month
-    const remainingDaysInBirthMonth = new Date(year, monthVal, 0).getDate() - dayVal;
-    daysOld = remainingDaysInBirthMonth + day;
-  }
+          // Adjust months and days if birth day hasn't occurred yet in the current month
+          if (daysOld < 0) {
+            monthsOld--; // Decrease months
+            // Calculate remaining days in the birth month
+            const remainingDaysInBirthMonth = new Date(year, monthVal, 0).getDate() - dayVal;
+            daysOld = remainingDaysInBirthMonth + day;
+          }
 
-  // If months are negative, adjust years and months
-  if (monthsOld < 0) {
-    yearsOld--; // Decrease years
-    monthsOld += 12; // Add 12 months
-  }
+          // If months are negative, adjust years and months
+          if (monthsOld < 0) {
+            yearsOld--; // Decrease years
+            monthsOld += 12; // Add 12 months
+          }
 
-  $('#yrResult').text(yearsOld);
-  $('#mnResult').text(monthsOld);
-  $('#dyResult').text(daysOld);
+          $('#yrResult').text(yearsOld);
+          $('#mnResult').text(monthsOld);
+          $('#dyResult').text(daysOld);
 
-  // // Calculate next birthday
-  // let nextBdayYear = year;
-  // let nextBdayMonth = monthVal;
-  // let nextBdayDay = dayVal;
+          // // Calculate next birthday
+          // let nextBdayYear = year;
+          // let nextBdayMonth = monthVal;
+          // let nextBdayDay = dayVal;
 
-  // // If birthday has already passed this year, increment the year
-  // if (currentDate > new Date(year, monthVal - 1, dayVal)) {
-  //   nextBdayYear++;
-  // }
+          // // If birthday has already passed this year, increment the year
+          // if (currentDate > new Date(year, monthVal - 1, dayVal)) {
+          //   nextBdayYear++;
+          // }
 
-  // // Calculate the next birthday date
-  // let nextBirthdayDate = new Date(nextBdayYear, nextBdayMonth - 1, nextBdayDay);
-  // // Calculate the difference in days between the next birthday and the current date
-  // let timeDiff = nextBirthdayDate.getTime() - currentDate.getTime();
-  // let daysUntilNextBday = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          // // Calculate the next birthday date
+          // let nextBirthdayDate = new Date(nextBdayYear, nextBdayMonth - 1, nextBdayDay);
+          // // Calculate the difference in days between the next birthday and the current date
+          // let timeDiff = nextBirthdayDate.getTime() - currentDate.getTime();
+          // let daysUntilNextBday = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-  // // Calculate remaining months and days until the next birthday
-  // let remainingMonths = nextBdayMonth - month;
-  // if (remainingMonths < 0) {
-  //   remainingMonths += 12; // Add 12 months if next birthday is in the next year
-  // }
+          // // Calculate remaining months and days until the next birthday
+          // let remainingMonths = nextBdayMonth - month;
+          // if (remainingMonths < 0) {
+          //   remainingMonths += 12; // Add 12 months if next birthday is in the next year
+          // }
 
-  // let remainingDays = nextBdayDay - day;
-  // if (remainingDays < 0) {
-  //   // If remaining days is negative, adjust it to the remaining days in the current month
-  //   remainingDays = new Date(nextBdayYear, nextBdayMonth, 0).getDate() - day + nextBdayDay;
-  //   remainingMonths--; // Decrease remaining months if necessary
-  // }
+          // let remainingDays = nextBdayDay - day;
+          // if (remainingDays < 0) {
+          //   // If remaining days is negative, adjust it to the remaining days in the current month
+          //   remainingDays = new Date(nextBdayYear, nextBdayMonth, 0).getDate() - day + nextBdayDay;
+          //   remainingMonths--; // Decrease remaining months if necessary
+          // }
 
-  // // Display the result
-  // $('#nextBday').text(`Next Birthday: ${remainingMonths} Months ${remainingDays} Days`);
-}
+          // // Display the result
+          // $('#nextBday').text(`Next Birthday: ${remainingMonths} Months ${remainingDays} Days`);
+        }
 
 
 
@@ -233,23 +238,24 @@
 
 
         if (!isValidDay || !isValidMonth || !isValidYear || !isValidDayBasedOnMonth || !isNotFutureDate) {
-          if (dayVal==='' &&!isValidDay) {
+          if (dayVal !== '' && !isValidDay) {
             $('[name="day"]').siblings('p').remove();
             $('[name="day"]').after('<p style="color:red; font-size:0.8rem">Day must be between 1 and 31.</p>');
           }
-          if (!isValidMonth) {
+          if (monthVal !== '' && !isValidMonth) {
+            console.log(`${month} : ${monthVal}`)
             $('[name="month"]').siblings('p').remove();
             $('[name="month"]').after('<p style="color:red; font-size:0.8rem">Month must be between be valid.</p>');
           }
-          if (!isValidDayBasedOnMonth) {
+          if (dayVal !== '' && !isValidDayBasedOnMonth) {
             $('[name="day"]').siblings('p').remove();
             $('[name="day"]').after('<p style="color:red; font-size:0.8rem">Day must be between be valid.</p>');
           }
-          if (!isValidYear) {
+          if (yearVal !== '' && !isValidYear) {
             $('[name="year"]').siblings('p').remove();
             $('[name="year"]').after('<p style="color:red; font-size:0.8rem">Year must be between 1800 and current year.</p>');
           }
-          if (!isNotFutureDate) {
+          if (dayVal !== '' && monthVal !== '' && yearVal !== '' && !isNotFutureDate) {
             $('[name="day"]').siblings('p').remove();
             $('[name="day"]').after('<p style="color:red; font-size:0.8rem">Date cannot be in the future.</p>');
           }
