@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <title>Frontend Mentor | Age calculator app</title>
+
+  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
+  <style>
+    .attribution {
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .attribution a {
+      color: hsl(228, 45%, 44%);
+    }
+
+    .dividerLine {
+      border-bottom: 1px solid hsl(0, 1%, 44%);
+    }
+
+    .mainCalc {
+      background-color: hsl(0, 0%, 100%);
+      max-width: 800px;
+      width: 100%;
+      max-height: 650px;
+      height: max-content;
+      padding: 20px;
+      border-radius: 30px 30px 180px 30px;
+    }
+
+    body {
+      height: 100vh;
+      background-color: hsl(0, 0%, 94%);
+    }
+
+    .arrowImg {
+      width: 60px;
+      right: 0;
+      bottom: -25px;
+    }
+
+    .clrPurple {
+      color: hsl(259, 100%, 65%);
+    }
+
+    label {
+      color: hsl(0, 1%, 44%);
+      font-size: 1.5rem;
+    }
+
+    input {
+      width: 150px;
+    }
+
+    .dobRes {
+      font-size: 3rem;
+    }
+
+    @media screen and (max-width:768px) {
+      .arrowImg {
+        right: 45%;
+        bottom: -25px;
+      }
+
+      .inputFields {
+        margin-top: 1rem !important;
+      }
+
+      label {
+        font-size: 1rem;
+      }
+
+
+      .dobRes {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="d-flex justify-content-center align-items-center flex-column">
+
+
+  <main class="d-flex flex-column mainCalc ">
+    <h2 class="text-center">Enter Your B'Day</h2>
+    <div class="d-flex flex-md-row flex-wrap justify-content-center w-100 gap-3 gap-md-1 mb-3 mt-5 inputFields"
+      style="font-size: 2rem; appearance:text-field;">
+      <div class="d-flex flex-column">
+        <label for="dayField">Day</label>
+        <input type="number" id="dayField" maxlength="2" min="1" max="31" name="day">
+      </div>
+      <div class="d-flex flex-column">
+        <label for="monthField">Month</label>
+        <input id="monthField" type="number" maxlength="2" min="1" max="12" name="month">
+      </div>
+      <div class="d-flex flex-column">
+        <label for="yearField">Year</label>
+        <input type="number" id="yearField" maxlength="4" min="1800" name="year">
+      </div>
+    </div>
+    <div class="dividerLine w-100 position-relative my-5">
+      <img src="./assets/images/icon-arrow.svg" alt="icon-arrow" class="position-absolute arrowImg rounded-circle"
+        style="background-color: hsl(259, 100%, 65%); ">
+    </div>
+    <div class="d-flex justify-content-center flex-column align-items-start dobRes">
+      <p><span class="clrPurple" id="yrResult">--</span> Years</p>
+      <p><span class="clrPurple" id="mnResult">--</span> Months</p>
+      <p><span class="clrPurple" id="dyResult">--</span> Days</p>
+    </div>
+    <p><span id="nextBday" class="clrPurple"></span></p>
+  </main>
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>.
+    Coded by <a href="#">Your Name Here</a>.
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+    $(function () {
+      let validation = false;
+      let date = new Date();
+      let day = date.getDate();
+      let month = date.getMonth();
+      let year = date.getFullYear();
+
+
+      $('input').on('change', function (event) {
+
+        const { name, value } = event.target;
+        const dayVal = parseInt($('#dayField').val());
+        const monthVal = parseInt($('#monthField').val());
+        const yearVal = parseInt($('#yearField').val());
+
+        validation = false;
+
+
+        const calculateAge = () => {
+  let yearsOld = year - yearVal;
+  let monthsOld = month - monthVal;
+  let daysOld = day - dayVal;
+
+  // Adjust months and days if birth day hasn't occurred yet in the current month
+  if (daysOld < 0) {
+    monthsOld--; // Decrease months
+    // Calculate remaining days in the birth month
+    const remainingDaysInBirthMonth = new Date(year, monthVal, 0).getDate() - dayVal;
+    daysOld = remainingDaysInBirthMonth + day;
+  }
+
+  // If months are negative, adjust years and months
+  if (monthsOld < 0) {
+    yearsOld--; // Decrease years
+    monthsOld += 12; // Add 12 months
+  }
+
+  $('#yrResult').text(yearsOld);
+  $('#mnResult').text(monthsOld);
+  $('#dyResult').text(daysOld);
+
+  // // Calculate next birthday
+  // let nextBdayYear = year;
+  // let nextBdayMonth = monthVal;
+  // let nextBdayDay = dayVal;
+
+  // // If birthday has already passed this year, increment the year
+  // if (currentDate > new Date(year, monthVal - 1, dayVal)) {
+  //   nextBdayYear++;
+  // }
+
+  // // Calculate the next birthday date
+  // let nextBirthdayDate = new Date(nextBdayYear, nextBdayMonth - 1, nextBdayDay);
+  // // Calculate the difference in days between the next birthday and the current date
+  // let timeDiff = nextBirthdayDate.getTime() - currentDate.getTime();
+  // let daysUntilNextBday = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+  // // Calculate remaining months and days until the next birthday
+  // let remainingMonths = nextBdayMonth - month;
+  // if (remainingMonths < 0) {
+  //   remainingMonths += 12; // Add 12 months if next birthday is in the next year
+  // }
+
+  // let remainingDays = nextBdayDay - day;
+  // if (remainingDays < 0) {
+  //   // If remaining days is negative, adjust it to the remaining days in the current month
+  //   remainingDays = new Date(nextBdayYear, nextBdayMonth, 0).getDate() - day + nextBdayDay;
+  //   remainingMonths--; // Decrease remaining months if necessary
+  // }
+
+  // // Display the result
+  // $('#nextBday').text(`Next Birthday: ${remainingMonths} Months ${remainingDays} Days`);
+}
+
+
+
+
+
+        //validate day, month and year
+
+        const isValidDay = (dayVal >= 1 && dayVal <= 31);
+        const isValidMonth = (monthVal >= 1 && monthVal <= 12);
+        const isValidYear = (yearVal >= 1800 && yearVal <= year);
+        const isLeapYear = ((yearVal % 4 == 0 && yearVal % 100 != 0) || yearVal % 400 == 0);
+
+
+        let isValidDayBasedOnMonth = true;
+        if (isValidMonth) {
+          if (monthVal == 2) { // February
+            if (isLeapYear) {
+              isValidDayBasedOnMonth = (dayVal >= 1 && dayVal <= 29);
+            } else {
+              isValidDayBasedOnMonth = (dayVal >= 1 && dayVal <= 28);
+            }
+          } else if ([4, 6, 9, 11].includes(monthVal)) { // April, June, September, November
+            isValidDayBasedOnMonth = (dayVal >= 1 && dayVal <= 30);
+          }
+        }
+
+
+        const currentDate = new Date();
+        const selectedDate = new Date(yearVal, monthVal - 1, dayVal);
+        const isNotFutureDate = selectedDate <= currentDate;
+
+
+        if (!isValidDay || !isValidMonth || !isValidYear || !isValidDayBasedOnMonth || !isNotFutureDate) {
+          if (dayVal==='' &&!isValidDay) {
+            $('[name="day"]').siblings('p').remove();
+            $('[name="day"]').after('<p style="color:red; font-size:0.8rem">Day must be between 1 and 31.</p>');
+          }
+          if (!isValidMonth) {
+            $('[name="month"]').siblings('p').remove();
+            $('[name="month"]').after('<p style="color:red; font-size:0.8rem">Month must be between be valid.</p>');
+          }
+          if (!isValidDayBasedOnMonth) {
+            $('[name="day"]').siblings('p').remove();
+            $('[name="day"]').after('<p style="color:red; font-size:0.8rem">Day must be between be valid.</p>');
+          }
+          if (!isValidYear) {
+            $('[name="year"]').siblings('p').remove();
+            $('[name="year"]').after('<p style="color:red; font-size:0.8rem">Year must be between 1800 and current year.</p>');
+          }
+          if (!isNotFutureDate) {
+            $('[name="day"]').siblings('p').remove();
+            $('[name="day"]').after('<p style="color:red; font-size:0.8rem">Date cannot be in the future.</p>');
+          }
+        } else {
+          // If all validations pass, remove any existing error messages and set validation to true
+          $('input').siblings('p').remove();
+          validation = true;
+
+          calculateAge();
+        }
+
+
+      })
+    });
+
+
+
+  </script>
+</body>
+
+</html>
